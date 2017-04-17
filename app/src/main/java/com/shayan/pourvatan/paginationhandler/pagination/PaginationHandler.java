@@ -16,6 +16,8 @@ public class PaginationHandler {
     private PaginationInterface paginationInterface;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
+    private FindLastItemInLayoutManagerInterface findLastItemInLayoutManagerInterface;
+    private int columnCount;
 
     private PaginationState paginationState = PaginationState.IDLE;
 
@@ -27,13 +29,21 @@ public class PaginationHandler {
         DONE // use when you receive all pages.
     }
 
-    public PaginationHandler(RecyclerView recyclerView, RecyclerView.LayoutManager layoutManager, RecyclerView.Adapter adapter, int offsetCount, PaginationInterface paginationInterface) {
+    public PaginationHandler(RecyclerView recyclerView,
+                             RecyclerView.LayoutManager layoutManager,
+                             RecyclerView.Adapter adapter,
+                             int offsetCount,
+                             PaginationInterface paginationInterface,
+                             FindLastItemInLayoutManagerInterface findLastItemInLayoutManagerInterface,
+                             int columnCount) {
 
         this.recyclerView = recyclerView;
         this.adapter = adapter;
         this.layoutManager = layoutManager;
         this.offset = offsetCount;
         this.paginationInterface = paginationInterface;
+        this.findLastItemInLayoutManagerInterface = findLastItemInLayoutManagerInterface;
+        this.columnCount = columnCount;
 
 
         initOnScrollListener();
@@ -45,18 +55,29 @@ public class PaginationHandler {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 
-                if (paginationState != PaginationState.IDLE) {
+                // you must set interface to handle pagination
+                if (paginationInterface == null) {
                     return;
                 }
 
+                // safety check
                 if (adapter == null || layoutManager == null) {
                     return;
                 }
 
-                int lastVisibleItemPosition = 0;
-                int columnCount = 1;
+                // pagination is on progress or is finished.
+                if (paginationState != PaginationState.IDLE) {
+                    return;
+                }
 
-                if (layoutManager instanceof GridLayoutManager) {
+
+                int lastVisibleItemPosition = 0;
+
+                if (findLastItemInLayoutManagerInterface != null) {
+
+                    lastVisibleItemPosition = findLastItemInLayoutManagerInterface.findLastVisibleItemPosition();
+
+                } else if (layoutManager instanceof GridLayoutManager) {
 
                     GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
                     lastVisibleItemPosition = gridLayoutManager.findLastCompletelyVisibleItemPosition();
@@ -76,7 +97,7 @@ public class PaginationHandler {
                     lastVisibleItemPosition = linearLayoutManager.findLastVisibleItemPosition();
 
                 } else {
-                    throw new IllegalArgumentException("this library don't support custom layoutManager");
+                    throw new IllegalArgumentException("this library don't support custom layoutManager, you must setFindLastItemInLayoutManagerInterface to handle other layoutManager ");
                 }
 
                 boolean needLoadMore = adapter.getItemCount() - (lastVisibleItemPosition + columnCount * offset) < 0;
@@ -108,8 +129,10 @@ public class PaginationHandler {
     public static class Builder {
 
         private int offsetCount = 3;
+        private int columnCount = 1;
         private RecyclerView recyclerView;
         private PaginationInterface paginationInterface;
+        private FindLastItemInLayoutManagerInterface findLastItemInLayoutManagerInterface;
 
         public Builder setOffsetCount(int offsetCount) {
             this.offsetCount = offsetCount;
@@ -123,6 +146,16 @@ public class PaginationHandler {
 
         public Builder setLoadMoreListener(PaginationInterface paginationInterface) {
             this.paginationInterface = paginationInterface;
+            return this;
+        }
+
+        public Builder setFindLastItemInLayoutManagerInterface(FindLastItemInLayoutManagerInterface findLastItemInLayoutManagerInterface) {
+            this.findLastItemInLayoutManagerInterface = findLastItemInLayoutManagerInterface;
+            return this;
+        }
+
+        public Builder setColumncount(int columnCount) {
+            this.columnCount = columnCount;
             return this;
         }
 
@@ -140,7 +173,7 @@ public class PaginationHandler {
                 throw new AssertionError("adapter must be initialized in PaginationHandler");
             }
 
-            return new PaginationHandler(recyclerView, recyclerView.getLayoutManager(), recyclerView.getAdapter(), offsetCount, paginationInterface);
+            return new PaginationHandler(recyclerView, recyclerView.getLayoutManager(), recyclerView.getAdapter(), offsetCount, paginationInterface, findLastItemInLayoutManagerInterface, columnCount);
         }
 
     }
