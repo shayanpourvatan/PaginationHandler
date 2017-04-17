@@ -8,7 +8,7 @@ For handling pagination in your project you must use following codes:
 
        new PaginationHandler.Builder()
                 .setRecyclerView(recyclerView)  // set recyclerView that you want to handle pagination
-                .setOffsetCount(5)    // set count pre last to load more happened
+                .setOffsetCount(5)    // set row count until end of list to load more happened
                 .setLoadMoreListener(new PaginationInterface() {      // handle loadMore,
                     @Override
                     public void onLoadMore(final PaginationCompletionInterface pageComplete) {
