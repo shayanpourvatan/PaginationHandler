@@ -1,0 +1,47 @@
+/************
+
+
+1- you must call this method after set adapter and layoutManager into recyclerView
+2- make sure you call build() method on Builder object
+
+
+        new PaginationHandler.Builder()
+                .setRecyclerView(recyclerView)  // set recyclerView that you want to handle pagination
+                .setOffsetCount(5)    // set count pre last to load more happened
+                .setLoadMoreListener(new PaginationInterface() {      // handle loadMore,
+                    @Override
+                    public void onLoadMore(final PaginationCompletionInterface pageComplete) {
+                        //      @Caution => remember to call pageComplete after adding items into list, or get failed response.
+
+                        // send your request in any way you want from DB or network
+                         new Thread(new Runnable() {
+                                     @Override
+                                     public void run() {
+                                         try {
+                                             Thread.sleep(5000);
+                                         } catch (InterruptedException e) {
+                                         }
+
+
+                                         Handler handler = new Handler(Looper.getMainLooper());
+                                         handler.post(new Runnable() {
+                                             @Override
+                                             public void run() {
+
+                                                 for (int i = 0; i < 40; i++) {
+                                                     adapterList.add(new Data("test" + (40 * page + i)));
+                                                 }
+
+                                                 adapter.setItems(adapterList);
+                                                 pageComplete.handledDataComplete(++page >= 5);
+                                             }
+                                         });
+
+                              }
+                          }).start();
+                    }
+                }).build();
+
+
+
+*************/
