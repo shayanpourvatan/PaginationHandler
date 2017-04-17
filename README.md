@@ -1,6 +1,12 @@
 # PaginationHandler
 You can handle pagination with this project, I've put one sample code in HowToUse file in project directory an i will write one sample class and test for this as soon I can, but I will explain here either.
 
+
+This project only will work with ****`LinearLayoutManager`****, ****`GridLayoutManager`**** and ****`StaggeredGridLayoutManager`**** you can add logic for your own ****`LayoutManager`**** if you want in ****`PaginationHandler`**** class.
+
+- - - -
+
+
 For handling pagination in your project you must use following codes:
 
        new PaginationHandler.Builder()
@@ -20,4 +26,7 @@ For handling pagination in your project you must use following codes:
 * You must to setLoadMoreListener to put your pagination code into there, after scroll reach to your desire position, onLoadMore will be called,
 * PaginationCompleteInterface is an interface that you use it when your job has been completed with loadMore to tell PaginationHandler to be ready for next request
 * then use build() method to create your method.
+
+
+
 
