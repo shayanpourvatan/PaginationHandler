@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.shayan.pourvatan.paginationhandler.pagination.Direction;
+import com.shayan.pourvatan.paginationhandler.pagination.FindFirstItemInLayoutManagerInterface;
 import com.shayan.pourvatan.paginationhandler.pagination.FindLastItemInLayoutManagerInterface;
 import com.shayan.pourvatan.paginationhandler.pagination.PaginationCompletionInterface;
 import com.shayan.pourvatan.paginationhandler.pagination.PaginationHandler;
@@ -53,14 +55,29 @@ public class Home extends AppCompatActivity {
 
                 /// if your layout manager is one of LinearLayoutManager, GridLayoutManager or StaggeredGridLayoutManager or child of those, you don't need this/
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                .setColumncount(1)   // default value is 1
-                .setFindLastItemInLayoutManagerInterface(new FindLastItemInLayoutManagerInterface() { // this method will return lastVisibleItem method in your layoutManager.
+
+                // default value is 1
+                .setColumncount(1)
+
+                // this method will return lastVisibleItem method in your layoutManager.
+                .setFindLastItemInLayoutManagerInterface(new FindLastItemInLayoutManagerInterface() {
                     @Override
                     public int findLastVisibleItemPosition() {
                         return layoutManager.findLastVisibleItemPosition();
                     }
                 })
+                // if your direction is LOAD_FROM_TOP you must set it instead of above method in custom layoutManager.
+                .setFindFirstItemInLayoutManagerInterface(new FindFirstItemInLayoutManagerInterface() {
+                    @Override
+                    public int findFirstVisibleItemPosition() {
+                        return layoutManager.findFirstVisibleItemPosition();
+                    }
+                })
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+                // default is it, if you want to loadMore happened when you reach on top of list, you must change it to LOAD_FROM_TOP
+                .setDirection(Direction.LOAD_FROM_BOTTOM)
 
                 .setLoadMoreListener(new PaginationInterface() {      // handle loadMore,
                     @Override

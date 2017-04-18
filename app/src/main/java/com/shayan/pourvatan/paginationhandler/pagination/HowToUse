@@ -1,8 +1,10 @@
 /************
 
+This is minimal usage of this component, if you want more usage please see "Home.class"
 
 1- you must call this method after set adapter and layoutManager into recyclerView
 2- make sure you call build() method on Builder object
+
 
 
         new PaginationHandler.Builder()
