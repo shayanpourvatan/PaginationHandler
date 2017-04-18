@@ -1,9 +1,6 @@
 # PaginationHandler
 You can handle pagination with this project, I've put one sample code in HowToUse file in project directory an i will write one sample class and test for this as soon I can, but I will explain here either.
 
-
-This project only will work with ****`LinearLayoutManager`****, ****`GridLayoutManager`**** and ****`StaggeredGridLayoutManager`**** you can add logic for your own ****`LayoutManager`**** if you want in ****`PaginationHandler`**** class.
-
 - - - -
 
 
@@ -11,7 +8,7 @@ For handling pagination in your project you must use following codes:
 
        new PaginationHandler.Builder()
                 .setRecyclerView(recyclerView)  // set recyclerView that you want to handle pagination
-                .setOffsetCount(5)    // set count pre last to load more happened
+                .setOffsetCount(5)    // set row count until end of list to load more happened
                 .setLoadMoreListener(new PaginationInterface() {      // handle loadMore,
                     @Override
                     public void onLoadMore(final PaginationCompletionInterface pageComplete) {
@@ -26,6 +23,7 @@ For handling pagination in your project you must use following codes:
 * You must to setLoadMoreListener to put your pagination code into there, after scroll reach to your desire position, onLoadMore will be called,
 * PaginationCompleteInterface is an interface that you use it when your job has been completed with loadMore to tell PaginationHandler to be ready for next request
 * then use build() method to create your method.
+* You can use your custom `LayoutManager` class, if your class is not instance of `LinearLayoutManager`, `GridLayoutManager` or `StaggeredGridLayoutManager` you **MUST SET `setFindLastItemInLayoutManagerInterface` in builder object**, `setColumncount` is an optional method when your layoutManager has more than one column.
 
 
 
