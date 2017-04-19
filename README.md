@@ -30,4 +30,12 @@ For handling pagination in your project you must use following codes:
 With new Version You can manage pagination from top either, for getting how you can do it please see ***Home.class*** file, I've put everything there
 
 
+Contribution
+-----
+
+Comments, contributions and patches are greatly appreciated.
+
+License
+-----
+The MIT License (MIT).
 
